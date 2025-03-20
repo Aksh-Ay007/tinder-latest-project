@@ -2,7 +2,7 @@ import React from 'react'
 
 function Profile() {
   return (
-    <div>Profile</div>
+    <div className="flex items-center justify-center flex-grow pt-16">Profile</div>
   )
 }
 
