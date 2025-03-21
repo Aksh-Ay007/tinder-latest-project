@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [emailId, setEmailId] = useState("akki@gmail.com");
   const [password, setPassword] = useState("Akki123!@");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,7 +23,8 @@ const Login = () => {
       dispatch(addUser(res.data));
       navigate('/');
     } catch (error) {
-      console.error("Login failed:", error);
+      setError("Login failed: " + (error.response ? error.response.data : error.message));
+     
     }
   };
 
@@ -56,6 +58,10 @@ const Login = () => {
               required
             />
           </div>
+
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+
+          <p className="text-sm text-gray-500 text-right mb-4">Forgot Password?</p>
 
           <button
             type="submit"

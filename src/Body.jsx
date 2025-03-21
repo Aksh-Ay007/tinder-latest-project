@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import Navbar from './Navbar';
 import { Outlet } from 'react-router-dom';
