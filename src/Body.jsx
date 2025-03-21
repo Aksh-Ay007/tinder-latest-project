@@ -38,13 +38,16 @@ function Body() {
   }, []); // Add dependency array to ensure useEffect runs only once
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <div className="flex-grow">
-        <Outlet />
-      </div>
-      <Footer />
-    </div>
+  <div>
+
+<Navbar />
+  
+  <Outlet />
+
+<Footer />
+  </div>
+     
+
   );
 }
 
