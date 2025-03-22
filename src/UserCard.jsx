@@ -2,14 +2,14 @@ import React from "react";
 
 function UserCard({ user }) {
   const { firstName, lastName, photoUrl, bio, age } = user;
-  
+
   return (
-    <div className="w-96 mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="w-96 mx-auto bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:scale-105">
       {/* Profile Image with gradient overlay */}
       <div className="relative">
         <div className="h-64 w-full overflow-hidden">
           <img
-            src={photoUrl}
+            src={photoUrl || "https://via.placeholder.com/400x500"}
             alt={`${firstName} ${lastName}`}
             className="w-full h-full object-cover"
           />
@@ -32,13 +32,13 @@ function UserCard({ user }) {
         
         {/* Action buttons */}
         <div className="flex justify-between items-center">
-          <button className="w-16 h-16 flex items-center justify-center rounded-full bg-white border-2 border-red-400 text-red-500 shadow-md hover:bg-red-50 transition duration-300">
+          <button className="w-16 h-16 flex items-center justify-center rounded-full bg-white border-2 border-red-400 text-red-500 shadow-md hover:bg-red-50 transition duration-300 transform hover:scale-110">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
           
-          <button className="w-16 h-16 flex items-center justify-center rounded-full bg-white border-2 border-green-400 text-green-500 shadow-md hover:bg-green-50 transition duration-300">
+          <button className="w-16 h-16 flex items-center justify-center rounded-full bg-white border-2 border-green-400 text-green-500 shadow-md hover:bg-green-50 transition duration-300 transform hover:scale-110">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
@@ -47,8 +47,6 @@ function UserCard({ user }) {
       </div>
     </div>
   );
-  
-  
 }
 
 export default UserCard;
