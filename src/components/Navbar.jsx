@@ -95,11 +95,11 @@ function Navbar() {
                   </Link>
                   
                   <Link 
-                    to="/settings" 
+                    to="/requests" 
                     className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition duration-150"
                     onClick={closeDropdown}
                   >
-                    Settings
+                    Requests
                   </Link>
                   
                   <Link 

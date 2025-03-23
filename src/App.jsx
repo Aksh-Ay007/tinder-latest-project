@@ -9,6 +9,7 @@ import appStore from './utils/appStore';
 import Feed from './components/Feed';
 import Connections from './components/Connections';
 import ConnectionProfile from './components/ConnectionProfile';
+import Requests from './components/Requests';
 
 
 function App() {
@@ -30,7 +31,8 @@ function App() {
   <Route path='/login' element={<Login/>}/>
   <Route path='/profile' element={<Profile/>}/>
   <Route path='/connections' element={<Connections/>}/>
-  <Route path='/connectionProfile' element={<ConnectionProfile/>}/>
+  <Route path='/requests' element={<Requests/>}/>
+  
 
   </Route>
 

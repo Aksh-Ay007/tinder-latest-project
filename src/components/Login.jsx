@@ -8,11 +8,13 @@ const Login = () => {
   const [emailId, setEmailId] = useState("hannah.lee@example.com");
   const [password, setPassword] = useState("Password123!@");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent form reload
+    setIsLoading(true);
 
     try {
       const res = await axios.post("http://localhost:7777/login", {
@@ -24,52 +26,96 @@ const Login = () => {
       navigate('/');
     } catch (error) {
       setError("Login failed: " + (error.response ? error.response.data : error.message));
-     
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-pink-500 to-red-500 relative p-0">
-      <div className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-3xl font-bold text-center text-red-500">Welcome Back! ❤️</h2>
-        <p className="text-center text-gray-600 mb-6">Find your match today!</p>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 w-full max-w-md">
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-8 text-center">
+          <h2 className="text-3xl font-bold text-white">Welcome Back!</h2>
+          <p className="text-purple-100 mt-2">Sign in to continue your journey</p>
+        </div>
 
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Email</label>
-            <input
-              type="email"
-              value={emailId}
-              onChange={(e) => setEmailId(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+        <div className="p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-md">
+              <p className="text-red-700 font-medium">{error}</p>
+            </div>
+          )}
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+          <form onSubmit={handleLogin}>
+            <div className="mb-5">
+              <label className="block text-gray-700 font-medium mb-2">Email Address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <input
+                  type="email"
+                  value={emailId}
+                  onChange={(e) => setEmailId(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+            </div>
 
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+            <div className="mb-3">
+              <label className="block text-gray-700 font-medium mb-2">Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </div>
 
-          <p className="text-sm text-gray-500 text-right mb-4">Forgot Password?</p>
+            <div className="flex justify-end mb-6">
+              <button type="button" className="text-sm text-purple-600 hover:text-purple-800 font-medium transition-colors">
+                Forgot Password?
+              </button>
+            </div>
 
-          <button
-            type="submit"
-            className="w-full bg-pink-500 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-          >
-            Login❤️
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-md flex items-center justify-center"
+            >
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-3"></div>
+                  Signing In...
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                Don't have an account?{" "}
+                <button type="button" className="text-purple-600 hover:text-purple-800 font-medium transition-colors">
+                  Sign Up
+                </button>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
