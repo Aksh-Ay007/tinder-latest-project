@@ -1,21 +1,52 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
+import { removeRequest } from "../utils/requestSlice";
 
 function Navbar() {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+  const [requestCount, setRequestCount] = useState(0);
+  const [connectionCount, setConnectionCount] = useState(0);
+
+  // Fetch pending request count and connection count
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/requests/count`, { withCredentials: true });
+        setRequestCount(response.data.pendingRequests);
+        setConnectionCount(response.data.connections);
+      } catch (error) {
+        console.error("Error fetching counts:", error);
+      }
+    };
+
+    const handleRefreshCount = () => {
+      fetchCounts();
+    };
+
+    if (user) {
+      fetchCounts();
+      
+      // Listen for the custom event triggered by Requests component
+      window.addEventListener('refreshRequestCount', handleRefreshCount);
+      
+      return () => {
+        window.removeEventListener('refreshRequestCount', handleRefreshCount);
+      };
+    }
+  }, [user]);
+
   const handleLogout = async () => {
     try {
       await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
       dispatch(removeUser());
-      return navigate('/login');
+      navigate('/login');
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -46,7 +77,14 @@ function Navbar() {
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex items-center space-x-6">
           <Link to="/" className="hover:text-pink-200 transition duration-300">Discover</Link>
-          <Link to="/connections" className="hover:text-pink-200 transition duration-300">Connections</Link>
+          <Link to="/connections" className="hover:text-pink-200 transition duration-300 relative">
+            Connections
+            {connectionCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {connectionCount}
+              </span>
+            )}
+          </Link>
           <Link to="/messages" className="hover:text-pink-200 transition duration-300">Messages</Link>
         </div>
 
@@ -94,20 +132,31 @@ function Navbar() {
                     </div>
                   </Link>
                   
+                  {/* Requests with count badge */}
                   <Link 
                     to="/requests" 
-                    className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition duration-150"
+                    className="relative block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition duration-150"
                     onClick={closeDropdown}
                   >
                     Requests
+                    {requestCount > 0 && (
+                      <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        {requestCount}
+                      </span>
+                    )}
                   </Link>
                   
                   <Link 
                     to="/connections" 
-                    className="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition duration-150"
+                    className="relative block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition duration-150"
                     onClick={closeDropdown}
                   >
                     Connections
+                    {connectionCount > 0 && (
+                      <span className="absolute top-1 right-1 bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                        {connectionCount}
+                      </span>
+                    )}
                   </Link>
                   
                   <div className="border-t border-gray-100 mt-2 pt-2">

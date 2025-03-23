@@ -10,3 +10,4 @@ set up children route using outlet
 create footer
 
 
+        const response = await axios.get(BASE_URL+"/requests/count", { withCredentials: true });
