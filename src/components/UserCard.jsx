@@ -4,6 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from '../utils/feedSlice';
+import { Link } from "react-router-dom";
 
 function UserCard({ user, onSwipeComplete }) {
   const {_id, firstName, lastName, photoUrl, bio, age, skills, hobby } = user;
@@ -144,10 +145,13 @@ function UserCard({ user, onSwipeComplete }) {
               </svg>
             </button>
             
-            <button className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-full text-xs shadow-md hover:shadow-lg transition duration-300">
-              View Profile
-            </button>
-            
+            <Link 
+  to="/userProfile" 
+  state={{ userId: _id }} 
+  className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-full text-xs shadow-md hover:shadow-lg transition duration-300"
+>
+  View Profile
+</Link>
             <button 
               className="w-12 h-12 flex items-center justify-center rounded-full bg-white border-2 border-green-400 text-green-500 shadow-md hover:bg-green-50 transition-all duration-300 transform hover:scale-110" 
               onClick={() => {

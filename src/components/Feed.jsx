@@ -30,6 +30,7 @@ function Feed() {
     }
   };
   
+  
   useEffect(() => {
     getFeed();
   }, []);

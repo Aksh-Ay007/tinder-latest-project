@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BASE_URL } from '../utils/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { addConnections } from '../utils/connectionSlice';
+import { Link } from 'react-router-dom';
 
 function Connections() {
   const connections = useSelector((store) => store.connections);
@@ -70,9 +71,9 @@ function Connections() {
           </div>
           <h1 className="text-2xl font-bold text-gray-800 mb-4">No Connections Yet</h1>
           <p className="text-gray-600 mb-8">Start connecting with people to build your network.</p>
-          <button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
+          <Link to={'/'} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
             Find New Connections
-          </button>
+          </Link>
         </div>
       </div>
     );

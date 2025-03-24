@@ -12,8 +12,8 @@ function EditProfile({ user, onClose }) {
   const [gender, setGender] = useState(user?.gender || '');
   const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || '');
   const [bio, setBio] = useState(user?.bio || '');
-  const [hobby, setHobby] = useState(user?.hobby || []);
-  const [skills, setSkills] = useState(user?.skills || []);
+  const [hobby, setHobby] = useState(user?.hobby || ['']);
+  const [skills, setSkills] = useState(user?.skills || ['']);
   const [photoFile, setPhotoFile] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);

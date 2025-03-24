@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("ethan.miller@example.com");
+  const [emailId, setEmailId] = useState("hannah.lee@example.com");
   const [password, setPassword] = useState("Password123!@");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -109,9 +109,9 @@ const Login = () => {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Don't have an account?{" "}
-                <button type="button" className="text-purple-600 hover:text-purple-800 font-medium transition-colors">
-                  Sign Up
-                </button>
+                <Link to={"/signin"} className="text-purple-600 hover:text-purple-800 font-medium transition-colors">
+                  SignUp
+                </Link>
               </p>
             </div>
           </form>
