@@ -44,7 +44,7 @@ function Body() {
   
   <Outlet />
 
-<Footer />
+{/* <Footer /> */}
   </div>
      
 

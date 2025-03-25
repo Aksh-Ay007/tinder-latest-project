@@ -11,10 +11,10 @@ function EditProfile({ user, onClose }) {
   const [age, setAge] = useState(user?.age || '');
   const [gender, setGender] = useState(user?.gender || '');
   const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || '');
+  const [preview, setPreview] = useState('');
   const [bio, setBio] = useState(user?.bio || '');
-  const [hobby, setHobby] = useState(user?.hobby || ['']);
-  const [skills, setSkills] = useState(user?.skills || ['']);
-  const [photoFile, setPhotoFile] = useState(null);
+  const [hobby, setHobby] = useState(user?.hobby || []);
+  const [skills, setSkills] = useState(user?.skills || []);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,8 +29,58 @@ function EditProfile({ user, onClose }) {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhotoFile(file);
-      setPhotoUrl(URL.createObjectURL(file));
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!validTypes.includes(file.type)) {
+        setError('Only JPEG, PNG, and GIF images are allowed');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = function() {
+        // Use canvas to compress image
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const maxWidth = 500;
+          const maxHeight = 500;
+          let width = img.width;
+          let height = img.height;
+
+          // Scale down if needed
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compress and convert to base64
+          const compressedImage = canvas.toDataURL('image/jpeg', 0.7);
+          
+          // Check compressed image size
+          const base64Size = (compressedImage.length * 3) / 4;
+          if (base64Size > 10 * 1024 * 1024) { // 10MB limit
+            setError('Image file is too large. Maximum 10MB allowed.');
+            return;
+          }
+
+          setPreview(compressedImage);
+          setError(''); // Clear any previous errors
+        };
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -63,31 +113,50 @@ function EditProfile({ user, onClose }) {
     setLoading(true);
 
     try {
-      let uploadedPhotoUrl = photoUrl;
+      // Validate required fields
+      if (!firstName.trim()) {
+        setError('First Name is required');
+        setLoading(false);
+        return;
+      }
 
-      if (photoFile) {
-        const formData = new FormData();
-        formData.append('file', photoFile);
-        formData.append('upload_preset', 'your_upload_preset'); // Replace with your Cloudinary upload preset
+      // Prepare payload with all profile details
+      const payload = {
+        firstName, 
+        lastName, 
+        bio, 
+        age, 
+        gender, 
+        hobby, 
+        skills
+      };
 
-        const uploadRes = await axios.post('https://api.cloudinary.com/v1_1/your_cloud_name/image/upload', formData); // Replace with your Cloudinary URL
-        uploadedPhotoUrl = uploadRes.data.secure_url;
+      // Add photo if selected
+      if (preview) {
+        payload.preview = preview;
       }
 
       const res = await axios.put(
         `${BASE_URL}/profile/edit`,
-        { firstName, lastName, photoUrl: uploadedPhotoUrl, bio, age, gender, hobby, skills },
-        { withCredentials: true }
+        payload,
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
       );
 
+      // Update Redux store with new user data
       dispatch(addUser(res?.data?.data));
-      setSuccess(true); // Set success status
+      
+      setSuccess(true);
       setLoading(false);
       
       setTimeout(() => {
         if (onClose) onClose();
         navigate("/profile");
-      }, 2000); // Close modal and navigate after 2 seconds
+      }, 2000);
     } catch (error) {
       setLoading(false);
       setError(error.response?.data?.message || "An error occurred");
@@ -98,7 +167,7 @@ function EditProfile({ user, onClose }) {
     if (success) {
       const timer = setTimeout(() => {
         setSuccess(false);
-      }, 3000); // Hide toast after 3 seconds
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [success]);
@@ -115,6 +184,7 @@ function EditProfile({ user, onClose }) {
               onChange={(e) => setFirstName(e.target.value)} 
               className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" 
               placeholder="First Name" 
+              required
             />
           </div>
           
@@ -166,21 +236,46 @@ function EditProfile({ user, onClose }) {
           </div>
           
           <div className="form-control w-full md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
-            <div className="flex items-center gap-3">
-              <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-3">Profile Photo</label>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="w-40 h-40 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                {(preview || photoUrl) ? (
+                  <img 
+                    src={preview || photoUrl} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-center text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-xs">No photo uploaded</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex-1 w-full">
                 <input 
                   type="file" 
-                  accept="image/*" 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" 
+                  id="profile-photo-upload"
+                  accept="image/jpeg,image/png,image/gif" 
+                  className="hidden" 
                   onChange={handlePhotoChange} 
                 />
+                <label 
+                  htmlFor="profile-photo-upload" 
+                  className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition duration-200 ease-in-out"
+                >
+                  Choose Photo
+                </label>
+                <p className="text-xs text-gray-500 mt-2 text-center">
+                  JPG, PNG, or GIF. Max size 10MB.
+                </p>
+                {error && (
+                  <p className="text-xs text-red-500 mt-2 text-center">{error}</p>
+                )}
               </div>
-              {photoUrl && (
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-purple-200">
-                  <img src={photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                </div>
-              )}
             </div>
           </div>
           
@@ -204,7 +299,7 @@ function EditProfile({ user, onClose }) {
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {hobby && hobby.map((item, index) => (
+              {hobby.map((item, index) => (
                 <div key={index} className="flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
                   {item}
                   <button 
@@ -239,7 +334,7 @@ function EditProfile({ user, onClose }) {
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {skills && skills.map((item, index) => (
+              {skills.map((item, index) => (
                 <div key={index} className="flex items-center gap-1 bg-pink-100 text-pink-700 px-3 py-1 rounded-full">
                   {item}
                   <button 
