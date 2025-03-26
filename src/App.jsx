@@ -13,6 +13,7 @@ import Requests from './components/Requests';
 import ConnectionProfileUI from './components/ConnectionProfileUI';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Premium from './components/Premium';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
   <Route path='/userProfile' element={<ConnectionProfileUI/>}/>
   <Route path='/connections' element={<Connections/>}/>
   <Route path='/requests' element={<Requests/>}/>
+  <Route path='/premium' element={<Premium/>}/>
   
 
   </Route>
