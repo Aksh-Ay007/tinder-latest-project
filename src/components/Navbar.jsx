@@ -286,7 +286,7 @@ function Navbar() {
 
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="hover:text-pink-200 transition duration-300">Premium <Mmbership></Mmbership></Link>
+          <Link to="/premium" className="hover:text-pink-200 transition duration-300">Premium </Link>
           <Link to="/connections" className="hover:text-pink-200 transition duration-300 relative">
             Connections
             {connectionCount > 0 && (
