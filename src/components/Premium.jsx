@@ -1,7 +1,40 @@
 
 import React from 'react';
+import { BASE_URL } from '../utils/constants';
+import axios from 'axios';
 
 const Premium = () => {
+
+
+  const handleBuyClick=async(type)=>{
+
+    const order=await axios.post(BASE_URL+'/payment/create',{membershipType:type},{withCredentials:true});
+
+    const { amount, keyId, currency, notes, orderId } = order.data;
+
+    const options = {
+      key: keyId,
+      amount,
+      currency,
+      name: "Bondify",
+      description: "Connect to other developers",
+      order_id: orderId,
+      prefill: {
+        name: notes.firstName + " " + notes.lastName,
+        email: notes.emailId,
+        contact: "7777777777",
+      },
+      theme: {
+        color: "#9C27B0",
+      },
+   
+    };
+
+    const rsp=new window.Razorpay(options)
+    rsp.open()
+  }
+
+
   return (
     <div className="container mx-auto px-4 py-12 mt-12">
       <h1 className="text-4xl font-bold text-center mb-10 text-gray-800">
@@ -42,7 +75,7 @@ const Premium = () => {
               3 Months Membership
             </li>
           </ul>
-          <button className="btn btn-secondary w-full">
+          <button onClick={()=>handleBuyClick('silver')} className="btn btn-secondary w-full">
             Choose Silver Plan
           </button>
         </div>
@@ -81,7 +114,7 @@ const Premium = () => {
               6 Months Membership
             </li>
           </ul>
-          <button className="btn btn-primary w-full">
+          <button onClick={()=>handleBuyClick('gold')} className="btn btn-primary w-full">
             Choose Gold Plan
           </button>
         </div>
