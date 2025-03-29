@@ -90,10 +90,10 @@ function Connections() {
           
           <div className="divide-y divide-gray-100">
             {connections.map((connection, index) => {
-              const { firstName, lastName, photoUrl } = connection;
+              const {_id, firstName, lastName, photoUrl } = connection;
               
               return (
-                <div key={index} className="p-6 hover:bg-gray-50 transition duration-200">
+                <div key={_id} className="p-6 hover:bg-gray-50 transition duration-200">
                   <div className="flex items-center space-x-6">
                     {/* User Avatar */}
                     {photoUrl ? (
@@ -125,12 +125,12 @@ function Connections() {
                         </button>
                         
                         {/* Message Button */}
-                        <button className="flex items-center text-white font-medium bg-purple-500 hover:bg-purple-600 py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                       <Link to={'/chat/'+_id}> <button className="flex items-center text-white font-medium bg-purple-500 hover:bg-purple-600 py-2 px-4 rounded-lg transition duration-200 shadow-md">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                           </svg>
                           Message
-                        </button>
+                        </button></Link>
                       </div>
                     </div>
                   </div>

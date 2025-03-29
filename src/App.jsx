@@ -14,6 +14,7 @@ import ConnectionProfileUI from './components/ConnectionProfileUI';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Premium from './components/Premium';
+import Chat from './components/Chat';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
   <Route path='/connections' element={<Connections/>}/>
   <Route path='/requests' element={<Requests/>}/>
   <Route path='/premium' element={<Premium/>}/>
+  <Route path='/chat/:targetUserId' element={<Chat/>}/>
   
 
   </Route>

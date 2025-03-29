@@ -26,7 +26,7 @@ function Navbar() {
         // Only check for new requests if user has seen previous notifications
         if (!notificationShownRef.current && 
             response.data.pendingRequests > prevRequestCountRef.current) {
-          console.log("New request detected!");
+          
           
           // Play notification sound
           playNotificationSound();
@@ -61,7 +61,6 @@ function Navbar() {
       
       // Set up polling for new requests - check more frequently
       const pollInterval = setInterval(() => {
-        console.log("Polling for new requests in navbar");
         fetchCounts();
       }, 15000); // Check every 15 seconds
       
@@ -84,7 +83,6 @@ function Navbar() {
         // Get the newest request (assuming first in the array)
         const newestRequest = res.data.data[0];
         
-        console.log("Latest request data:", newestRequest); // Debugging
         
         // If we have the complete user object already
         if (newestRequest.fromUser) {
@@ -93,7 +91,6 @@ function Navbar() {
         // If the API gives us the sender's user ID, fetch their details
         else if (newestRequest.fromUserId) {
           try {
-            console.log("Fetching user details for ID:", newestRequest.fromUserId);
             const userRes = await axios.get(`${BASE_URL}/user/${newestRequest.fromUserId}`, { withCredentials: true });
             
             if (userRes.data) {
@@ -111,7 +108,6 @@ function Navbar() {
   
   // Helper function to show the request popup with user data
   const showRequestPopup = (userData) => {
-    console.log("Showing popup for user:", userData);
     
     // Show popup notification for the new request
     setNewRequestPopup({
@@ -128,7 +124,6 @@ function Navbar() {
   // Function to play notification sound
   const playNotificationSound = () => {
     if (notificationAudioRef.current) {
-      console.log("Attempting to play notification sound");
       notificationAudioRef.current.currentTime = 0; // Reset to start
       notificationAudioRef.current.volume = 1.0; // Ensure volume is up
       const playPromise = notificationAudioRef.current.play();
@@ -150,7 +145,6 @@ function Navbar() {
 
   // Enable audio after user interaction (browser requirement)
   useEffect(() => {
-    console.log("Audio element initialized:", notificationAudioRef.current);
     
     // Pre-load audio
     if (notificationAudioRef.current) {
@@ -159,13 +153,11 @@ function Navbar() {
     
     // Allow user to enable audio with first interaction (needed for some browsers)
     const enableAudio = () => {
-      console.log("User interaction detected, enabling audio");
       if (notificationAudioRef.current) {
         notificationAudioRef.current.muted = false;
         notificationAudioRef.current.play().then(() => {
           notificationAudioRef.current.pause();
           notificationAudioRef.current.currentTime = 0;
-          console.log("Audio enabled successfully");
         }).catch(err => {
           console.error("Failed to enable audio:", err);
         });
