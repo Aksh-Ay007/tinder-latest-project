@@ -15,6 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Premium from './components/Premium';
 import Chat from './components/Chat';
+import Messages from './components/Messages';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
   <Route path='/requests' element={<Requests/>}/>
   <Route path='/premium' element={<Premium/>}/>
   <Route path='/chat/:targetUserId' element={<Chat/>}/>
+  <Route path='/messages' element={<Messages/>}/>
   
 
   </Route>

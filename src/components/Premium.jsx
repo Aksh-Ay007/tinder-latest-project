@@ -1,31 +1,34 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Trophy, Star, Shield, Sparkles } from 'lucide-react';
-import axios from 'axios';
-import { BASE_URL } from '../utils/constants';
+import React, { useEffect, useState, useMemo } from "react";
+import { Trophy, Star, Shield, Sparkles } from "lucide-react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { BASE_URL } from "../utils/constants";
+import { setPremium } from "../utils/premiumSlice";
 
 const Premium = () => {
   const [isUserPremium, setIsUserPremium] = useState(false);
   const [premiumDetails, setPremiumDetails] = useState(null);
+  const dispatch = useDispatch();
 
   // Calculate expiration date using useMemo
   const expirationDate = useMemo(() => {
-    if (!premiumDetails?.createdAt) return 'Not specified';
+    if (!premiumDetails?.createdAt) return "Not specified";
     const createdDate = new Date(premiumDetails.createdAt);
     let expirationDate;
     switch (premiumDetails.membershipType?.toLowerCase()) {
-      case 'silver':
+      case "silver":
         expirationDate = new Date(createdDate.setMonth(createdDate.getMonth() + 3));
         break;
-      case 'gold':
+      case "gold":
         expirationDate = new Date(createdDate.setMonth(createdDate.getMonth() + 6));
         break;
       default:
-        return 'Not specified';
+        return "Not specified";
     }
-    return expirationDate.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return expirationDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   }, [premiumDetails]);
 
@@ -44,17 +47,19 @@ const Premium = () => {
       if (res.data.isPremium) {
         setIsUserPremium(true);
         setPremiumDetails(res.data);
+        dispatch(setPremium({ isPremium: true, premiumDetails: res.data })); // Update Redux store
       }
     } catch (error) {
-      console.error('Error verifying premium status', error);
+      console.error("Error verifying premium status", error);
     }
   };
 
   // Handle payment order creation
   const handleBuyClick = async (type) => {
     try {
-      const order = await axios.post(BASE_URL + '/payment/create', 
-        { membershipType: type }, 
+      const order = await axios.post(
+        BASE_URL + "/payment/create",
+        { membershipType: type },
         { withCredentials: true }
       );
 
@@ -75,13 +80,15 @@ const Premium = () => {
         theme: {
           color: "#9C27B0",
         },
-        handler: verifyPremiumUser
+        handler: async () => {
+          await verifyPremiumUser(); // Re-fetch premium status after payment
+        },
       };
 
       const rsp = new window.Razorpay(options);
       rsp.open();
     } catch (error) {
-      console.error('Error creating payment order', error);
+      console.error("Error creating payment order", error);
     }
   };
 
@@ -103,17 +110,30 @@ const Premium = () => {
               <span className="text-gray-500 ml-2">/ 3 months</span>
             </div>
             <ul className="space-y-3 mb-6 flex-grow">
-              {['Chat with other people', '100 Connection Requests per day', 'Blue Tick Verified', '3 Months Membership'].map((feature, index) => (
+              {[
+                "Chat with other people",
+                "100 Connection Requests per day",
+                "Blue Tick Verified",
+                "3 Months Membership",
+              ].map((feature, index) => (
                 <li key={index} className="flex items-center text-gray-700">
-                  <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5 text-green-500 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   {feature}
                 </li>
               ))}
             </ul>
-            <button 
-              onClick={() => handleBuyClick('silver')} 
+            <button
+              onClick={() => handleBuyClick("silver")}
               className="btn btn-secondary w-full"
             >
               Choose Silver Plan
@@ -130,17 +150,30 @@ const Premium = () => {
               <span className="text-gray-500 ml-2">/ 6 months</span>
             </div>
             <ul className="space-y-3 mb-6 flex-grow">
-              {['Chat with other people', 'Infinite Connection Requests', 'Blue Tick Verified', '6 Months Membership'].map((feature, index) => (
+              {[
+                "Chat with other people",
+                "Infinite Connection Requests",
+                "Blue Tick Verified",
+                "6 Months Membership",
+              ].map((feature, index) => (
                 <li key={index} className="flex items-center text-gray-700">
-                  <svg className="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5 text-green-500 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   {feature}
                 </li>
               ))}
             </ul>
-            <button 
-              onClick={() => handleBuyClick('gold')} 
+            <button
+              onClick={() => handleBuyClick("gold")}
               className="btn btn-primary w-full"
             >
               Choose Gold Plan
@@ -163,38 +196,44 @@ const Premium = () => {
             </div>
             <div className="bg-white/20 px-4 py-2 rounded-full">
               <span className="text-sm font-medium">
-                {premiumDetails?.membershipType?.toUpperCase() || 'PREMIUM'}
+                {premiumDetails?.membershipType?.toUpperCase() || "PREMIUM"}
               </span>
             </div>
           </div>
-      
+
           <div className="p-8">
             <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-purple-50 p-6 rounded-lg text-center hover:shadow-lg transition-all duration-300">
-  <Star className="w-12 h-12 mx-auto text-purple-600 mb-4" />
-  <h2 className="text-xl font-semibold mb-2 text-gray-800">Exclusive Access</h2>
-  <p className="text-gray-600">Chat, Audio Call, and Video Call Features</p>
-</div>
-      
+              <div className="bg-purple-50 p-6 rounded-lg text-center hover:shadow-lg transition-all duration-300">
+                <Star className="w-12 h-12 mx-auto text-purple-600 mb-4" />
+                <h2 className="text-xl font-semibold mb-2 text-gray-800">
+                  Exclusive Access
+                </h2>
+                <p className="text-gray-600">Chat, Audio Call, and Video Call Features</p>
+              </div>
+
               <div className="bg-indigo-50 p-6 rounded-lg text-center hover:shadow-lg transition-all duration-300">
                 <Shield className="w-12 h-12 mx-auto text-blue-600 mb-4" />
-                <h2 className="text-xl font-semibold mb-2 text-gray-800">Enhanced Networking</h2>
+                <h2 className="text-xl font-semibold mb-2 text-gray-800">
+                  Enhanced Networking
+                </h2>
                 <p className="text-gray-600">Unlimited connection requests</p>
               </div>
-      
+
               <div className="bg-pink-50 p-6 rounded-lg text-center hover:shadow-lg transition-all duration-300">
                 <Sparkles className="w-12 h-12 mx-auto text-pink-600 mb-4" />
-                <h2 className="text-xl font-semibold mb-2 text-gray-800">Verified Profile</h2>
+                <h2 className="text-xl font-semibold mb-2 text-gray-800">
+                  Verified Profile
+                </h2>
                 <p className="text-gray-600">Stand out in the community</p>
               </div>
             </div>
-      
+
             <div className="bg-gray-100 rounded-xl p-6">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <p className="text-sm text-gray-500 mb-2">Membership Type</p>
                   <p className="text-xl font-bold text-purple-700">
-                    {premiumDetails?.membershipType?.toUpperCase() || 'N/A'}
+                    {premiumDetails?.membershipType?.toUpperCase() || "N/A"}
                   </p>
                 </div>
                 <div className="text-center">
@@ -203,9 +242,7 @@ const Premium = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-gray-500 mb-2">Expires On</p>
-                  <p className="text-xl font-bold text-gray-800">
-                    {expirationDate}
-                  </p>
+                  <p className="text-xl font-bold text-gray-800">{expirationDate}</p>
                 </div>
               </div>
             </div>
@@ -216,9 +253,7 @@ const Premium = () => {
   };
 
   // Conditional rendering based on premium status
-  return (
-    isUserPremium ? <PremiumUserView /> : <MembershipPlans />
-  );
+  return isUserPremium ? <PremiumUserView /> : <MembershipPlans />;
 };
 
 export default Premium;
