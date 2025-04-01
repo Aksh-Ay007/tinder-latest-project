@@ -3,8 +3,8 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import { GoogleLogin } from './OAuth';
+import { toast } from "react-toastify";
+// import { GoogleLogin } from './OAuth'; // Commented out to disable Google authentication
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
@@ -17,17 +17,20 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent form reload
     setIsLoading(true);
-  
+
     try {
-      const res = await axios.post("http://localhost:7777/login", {
-        emailId,
-        password,
-        
-      },{withCredentials:true});
-  
+      const res = await axios.post(
+        "http://localhost:7777/login",
+        {
+          emailId,
+          password,
+        },
+        { withCredentials: true }
+      );
+
       dispatch(addUser(res.data));
-      navigate('/');
-  
+      navigate("/");
+
       // Show success message after successful login
       toast.success("Logged in successfully!", {
         position: "top-center",
@@ -37,20 +40,23 @@ const Login = () => {
         pauseOnHover: true,
         draggable: true,
       });
-  
     } catch (error) {
-      setError("Login failed: " + (error.response ? error.response.data : error.message));
+      setError(
+        "Login failed: " + (error.response ? error.response.data : error.message)
+      );
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 w-full max-w-md">
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-6 text-center">
           <h2 className="text-2xl font-bold text-white">Welcome Back!</h2>
-          <p className="text-purple-100 text-sm mt-1">Sign in to continue your journey</p>
+          <p className="text-purple-100 text-sm mt-1">
+            Sign in to continue your journey
+          </p>
         </div>
 
         <div className="p-6">
@@ -62,11 +68,24 @@ const Login = () => {
 
           <form onSubmit={handleLogin}>
             <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-1 text-sm">Email Address</label>
+              <label className="block text-gray-700 font-medium mb-1 text-sm">
+                Email Address
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
                   </svg>
                 </div>
                 <input
@@ -81,11 +100,24 @@ const Login = () => {
             </div>
 
             <div className="mb-3">
-              <label className="block text-gray-700 font-medium mb-1 text-sm">Password</label>
+              <label className="block text-gray-700 font-medium mb-1 text-sm">
+                Password
+              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
                   </svg>
                 </div>
                 <input
@@ -100,7 +132,10 @@ const Login = () => {
             </div>
 
             <div className="flex justify-end mb-4">
-              <button type="button" className="text-xs text-purple-600 hover:text-purple-800 font-medium">
+              <button
+                type="button"
+                className="text-xs text-purple-600 hover:text-purple-800 font-medium"
+              >
                 Forgot Password?
               </button>
             </div>
@@ -126,13 +161,16 @@ const Login = () => {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
 
-         
-            <GoogleLogin />
+            {/* GoogleLogin component is disabled */}
+            {/* <GoogleLogin /> */}
 
             <div className="mt-4 text-center">
               <p className="text-xs text-gray-600">
                 Don't have an account?{" "}
-                <Link to={"/signin"} className="text-purple-600 hover:text-purple-800 font-medium">
+                <Link
+                  to={"/signin"}
+                  className="text-purple-600 hover:text-purple-800 font-medium"
+                >
                   SignUp
                 </Link>
               </p>
