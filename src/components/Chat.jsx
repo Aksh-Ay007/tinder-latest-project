@@ -564,29 +564,31 @@ const Chat = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100">
-      <div className="w-full max-w-2xl mx-auto bg-gradient-to-br from-white to-gray-100 rounded-lg shadow-lg overflow-hidden h-[80vh]">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100 p-2 sm:p-4 md:p-8">
+      <div className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden h-[90vh] md:h-[80vh] flex flex-col">
         {/* Chat Header */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white">
-          <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between p-3 md:p-4 bg-gradient-to-r from-purple-600 to-blue-500 text-white">
+          <div className="flex items-center space-x-2 md:space-x-3">
             <div className="relative">
               <img
                 src={targetUserPhoto || "/api/placeholder/80/80"}
                 alt={targetUserName || "User Profile"}
-                className="w-10 h-10 rounded-full border-2 border-white"
+                className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white"
               />
               {isRecipientOnline && (
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                <span className="absolute bottom-0 right-0 w-2 h-2 md:w-3 md:h-3 bg-green-500 rounded-full border-2 border-white"></span>
               )}
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="font-semibold text-lg">{targetUserName || "Recipient Name"}</h2>
-                <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                <h2 className="font-semibold text-sm md:text-lg truncate max-w-[120px] sm:max-w-[200px] md:max-w-[300px]">
+                  {targetUserName || "Recipient Name"}
+                </h2>
+                <span className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full hidden sm:inline-block">
                   Verified
                 </span>
               </div>
-              <p className="text-sm text-gray-200">
+              <p className="text-xs md:text-sm text-gray-200 truncate">
                 {isRecipientOnline 
                   ? "Active now" 
                   : lastSeen 
@@ -595,32 +597,32 @@ const Chat = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
-              <Phone className="text-white" size={20} />
+          <div className="flex items-center space-x-1 md:space-x-2">
+            <button className="bg-white/20 p-1.5 md:p-2 rounded-full hover:bg-white/30 transition">
+              <Phone className="text-white" size={16} />
             </button>
-            <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
-              <Video className="text-white" size={20} />
+            <button className="bg-white/20 p-1.5 md:p-2 rounded-full hover:bg-white/30 transition">
+              <Video className="text-white" size={16} />
             </button>
-            <button className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
-              <MoreVertical className="text-white" size={20} />
+            <button className="bg-white/20 p-1.5 md:p-2 rounded-full hover:bg-white/30 transition">
+              <MoreVertical className="text-white" size={16} />
             </button>
           </div>
         </div>
 
         {/* Chat Messages Area */}
-        <div className="h-[65%] overflow-y-auto p-4 space-y-4 bg-gray-50">
+        <div className="flex-grow overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-500">
-              <div className="mb-4 p-4 bg-gray-100 rounded-full">
-                <Image size={40} className="text-purple-500" />
+              <div className="mb-3 md:mb-4 p-3 md:p-4 bg-gray-100 rounded-full">
+                <Image size={32} className="text-purple-500" />
               </div>
-              <p className="text-center">No messages yet. Start chatting!</p>
+              <p className="text-center text-sm md:text-base">No messages yet. Start chatting!</p>
             </div>
           ) : (
             messages.map((msg, index) => (
               <div key={index} className={`flex flex-col ${msg.senderId === userId ? "items-end" : "items-start"}`}>
-                <div className={`max-w-[75%] p-3 rounded-lg shadow-sm ${
+                <div className={`max-w-[75%] p-2 md:p-3 rounded-lg shadow-sm ${
                   msg.senderId === userId 
                     ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white" 
                     : "bg-white text-gray-800 border border-gray-200"
@@ -630,7 +632,7 @@ const Chat = () => {
                       {renderMedia(msg)}
                     </div>
                   ) : null}
-                  <div>{msg.message}</div>
+                  <div className="text-sm md:text-base">{msg.message}</div>
                 </div>
                 <div className="flex items-center text-xs text-gray-500 mt-1 space-x-1">
                   <span>
@@ -665,45 +667,45 @@ const Chat = () => {
 
         {/* Media Upload Preview */}
         {showMediaUpload && (
-          <div className="absolute bottom-20 left-0 right-0 mx-auto w-full max-w-lg bg-white rounded-lg shadow-lg p-4 border border-gray-200 z-10">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-medium text-gray-800">Send {selectedMediaType === 'image' ? 'Photo' : 'Video'}</h3>
+          <div className="absolute inset-x-2 sm:inset-x-4 md:inset-x-auto md:left-1/4 md:right-1/4 bottom-20 mx-auto bg-white rounded-lg shadow-lg p-3 md:p-4 border border-gray-200 z-10">
+            <div className="flex justify-between items-center mb-2 md:mb-3">
+              <h3 className="font-medium text-sm md:text-base text-gray-800">Send {selectedMediaType === 'image' ? 'Photo' : 'Video'}</h3>
               <button 
                 onClick={handleCancelUpload}
                 className="text-gray-500 hover:text-gray-700"
                 disabled={isUploading}
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
             
             {uploadError && (
-              <div className="mb-3 p-2 bg-red-100 text-red-700 rounded">
+              <div className="mb-2 md:mb-3 p-2 bg-red-100 text-red-700 rounded text-xs md:text-sm">
                 {uploadError}
               </div>
             )}
             
-            <div className="flex justify-center mb-3">
+            <div className="flex justify-center mb-2 md:mb-3">
               {selectedMediaType === 'image' ? (
                 <img 
                   src={mediaPreview} 
                   alt="Upload preview" 
-                  className="max-h-64 rounded"
+                  className="max-h-40 md:max-h-64 rounded"
                 />
               ) : (
                 <video 
                   src={mediaPreview} 
                   controls 
-                  className="max-h-64 rounded"
+                  className="max-h-40 md:max-h-64 rounded"
                 />
               )}
             </div>
             
             {isUploading && (
-              <div className="mb-3">
-                <div className="h-2 w-full bg-gray-200 rounded-full">
+              <div className="mb-2 md:mb-3">
+                <div className="h-1.5 md:h-2 w-full bg-gray-200 rounded-full">
                   <div 
-                    className="h-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" 
+                    className="h-1.5 md:h-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" 
                     style={{ width: `${uploadProgress}%` }}
                   ></div>
                 </div>
@@ -717,7 +719,7 @@ const Chat = () => {
               <button
                 onClick={handleSendMedia}
                 disabled={isUploading}
-                className={`bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-full hover:from-pink-600 hover:to-purple-600 transition ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`bg-gradient-to-r from-pink-500 to-purple-500 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-sm hover:from-pink-600 hover:to-purple-600 transition ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {isUploading ? 'Sending...' : 'Send'}
               </button>
@@ -726,7 +728,7 @@ const Chat = () => {
         )}
 
         {/* Message Input Area */}
-        <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-4 border-t flex items-center space-x-2 relative">
+        <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-2 md:p-4 border-t flex items-center space-x-2 relative">
           {/* Hidden file input */}
           <input
             type="file"
@@ -739,17 +741,17 @@ const Chat = () => {
           {/* Media buttons */}
           <button 
             onClick={() => triggerFileInput('image')}
-            className="text-pink-500 hover:text-pink-700 p-2 rounded-full hover:bg-gray-100 transition"
+            className="text-pink-500 hover:text-pink-700 p-1.5 md:p-2 rounded-full hover:bg-gray-100 transition"
             disabled={isUploading}
           >
-            <Image size={20} />
+            <Image size={18} />
           </button>
           <button 
             onClick={() => triggerFileInput('video')}
-            className="text-purple-500 hover:text-purple-700 p-2 rounded-full hover:bg-gray-100 transition"
+            className="text-purple-500 hover:text-purple-700 p-1.5 md:p-2 rounded-full hover:bg-gray-100 transition"
             disabled={isUploading}
           >
-            <FileVideo size={20} />
+            <FileVideo size={18} />
           </button>
           
           {/* Text input */}
@@ -766,17 +768,17 @@ const Chat = () => {
               }
             }}
             placeholder="Type your message..."
-            className="flex-grow px-4 py-3 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-300"
+            className="flex-grow px-3 py-2 md:px-4 md:py-3 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-300"
             disabled={isUploading}
           />
           
           {/* Send button */}
           <button
             onClick={sendMessage}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-3 rounded-full hover:from-pink-600 hover:to-purple-600 transition"
+            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white p-2 md:p-3 rounded-full hover:from-pink-600 hover:to-purple-600 transition"
             disabled={isUploading || !newMessage.trim()}
           >
-            <Send size={20} />
+            <Send size={18} />
           </button>
         </div>
       </div>
