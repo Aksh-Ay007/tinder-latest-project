@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:7777/login",
+        "http://localhost:8888/login",
         {
           emailId,
           password,
