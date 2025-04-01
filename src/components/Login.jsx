@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../utils/constants";
 // import { GoogleLogin } from './OAuth'; // Commented out to disable Google authentication
 
 const Login = () => {
@@ -20,7 +21,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8888/login",
+        `${BASE_URL}/login`,
         {
           emailId,
           password,
