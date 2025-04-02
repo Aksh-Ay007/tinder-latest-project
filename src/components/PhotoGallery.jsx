@@ -11,8 +11,8 @@ function PhotoGallery({ user }) {
   const [loading, setLoading] = useState(false);
   const [activePhoto, setActivePhoto] = useState(null);
   const [showLightbox, setShowLightbox] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete confirmation modal
-  const [photoToDelete, setPhotoToDelete] = useState(null); // Photo to delete
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [photoToDelete, setPhotoToDelete] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -175,7 +175,8 @@ function PhotoGallery({ user }) {
   const hasMaxPhotos = user?.photos?.length >= 8;
 
   return (
-    <div className="w-full">
+    // Removed extra wrapping div for better structure
+    <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-gray-700">My Photos</h2>
 
@@ -204,7 +205,7 @@ function PhotoGallery({ user }) {
 
       {/* Success message */}
       {success && (
-        <div className="mt-4 bg-green-50 border-l-4 border-green-500 p-3">
+        <div className="mb-4 bg-green-50 border-l-4 border-green-500 p-3">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -229,7 +230,7 @@ function PhotoGallery({ user }) {
 
       {/* Error message */}
       {error && (
-        <div className="mt-4 bg-red-50 border-l-4 border-red-500 p-3">
+        <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-3">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -252,55 +253,61 @@ function PhotoGallery({ user }) {
         </div>
       )}
 
-      {/* Photo Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-        {user?.photos?.map((photo, index) => (
-          <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
-            <img
-              src={photo.url}
-              alt={`Gallery photo ${index + 1}`}
-              className="w-full h-full object-cover cursor-pointer transition duration-300 hover:scale-105"
-              onClick={() => openLightbox(photo)}
-            />
-            <button
-              onClick={() => openDeleteModal(photo)}
-              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
-              title="Delete photo"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        ))}
+      {/* Improved Photo Gallery Section - Better Mobile Display */}
+      <div className="mb-4">
+        {/* Grid for desktop, scrollable grid for mobile with better visibility */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 auto-rows-min">
+          {user?.photos?.map((photo, index) => (
+            <div key={index} className="relative aspect-square rounded-lg overflow-hidden group bg-gray-100">
+              <img
+                src={photo.url}
+                alt={`Gallery photo ${index + 1}`}
+                className="w-full h-full object-cover cursor-pointer transition duration-300 hover:scale-105"
+                onClick={() => openLightbox(photo)}
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openDeleteModal(photo);
+                }}
+                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
+                title="Delete photo"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))}
 
-        {/* Empty slots */}
-        {user?.photos?.length === 0 && (
-          <div className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p className="mt-2 text-sm">No photos yet</p>
-          </div>
-        )}
+          {/* Empty state when no photos */}
+          {user?.photos?.length === 0 && (
+            <div className="col-span-2 sm:col-span-3 md:col-span-4 aspect-video rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 p-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-center">No photos yet. Click "Add Photo" to upload your first photo.</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Mobile-optimized Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Delete Photo</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to delete this photo? This action cannot be undone.</p>
-            <div className="flex justify-end gap-3">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 w-full max-w-xs sm:max-w-md">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Delete Photo</h3>
+            <p className="text-gray-600 mb-4">Are you sure you want to delete this photo? This action cannot be undone.</p>
+            <div className="flex justify-end gap-2">
               <button
                 onClick={closeDeleteModal}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeletePhoto}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition"
               >
                 Delete
               </button>
@@ -309,25 +316,39 @@ function PhotoGallery({ user }) {
         </div>
       )}
 
-      {/* Lightbox for photo viewing */}
+      {/* Mobile-optimized Lightbox for photo viewing */}
       {showLightbox && activePhoto && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="relative max-w-3xl max-h-[90vh] w-full p-2">
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-2">
+          <div className="relative w-full max-w-lg">
             <button
               onClick={closeLightbox}
-              className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all duration-200"
+              className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all duration-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             <div className="rounded-lg overflow-hidden">
-              <img src={activePhoto.url} alt="Full size" className="max-h-[80vh] max-w-full mx-auto" />
+              <img src={activePhoto.url} alt="Full size" className="w-full h-auto" />
             </div>
+            <button
+              onClick={() => {
+                closeLightbox();
+                openDeleteModal(activePhoto);
+              }}
+              className="absolute bottom-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-all duration-200 flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </div>
         </div>
       )}
-    </div>
+      
+      {/* Additional padding for mobile scrolling */}
+      <div className="h-16 md:hidden"></div>
+    </>
   );
 }
 
