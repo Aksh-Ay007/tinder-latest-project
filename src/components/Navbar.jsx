@@ -7,14 +7,17 @@ import { removeUser } from "../utils/userSlice";
 
 function Navbar() {
   const user = useSelector((store) => store.user);
-  const premium = useSelector((store) => store.premium); // Access premium state from Redux
+  const premium = useSelector((store) => store.premium);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [requestCount, setRequestCount] = useState(0);
   const [connectionCount, setConnectionCount] = useState(0);
-  const [messageCount, setMessageCount] = useState(0); // State for unread message count
-  const [newRequestPopup, setNewRequestPopup] = useState({ show: false, user: null });
+  const [messageCount, setMessageCount] = useState(0);
+  const [newRequestPopup, setNewRequestPopup] = useState({
+    show: false,
+    user: null,
+  });
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const notificationAudioRef = useRef(null);
   const prevRequestCountRef = useRef(requestCount);
@@ -24,7 +27,9 @@ function Navbar() {
   useEffect(() => {
     const fetchCounts = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/requests/count`, { withCredentials: true });
+        const response = await axios.get(`${BASE_URL}/requests/count`, {
+          withCredentials: true,
+        });
 
         // Only check for new requests if user has seen previous notifications
         if (
@@ -52,7 +57,9 @@ function Navbar() {
         setConnectionCount(response.data.connections);
 
         // Fetch unread message count
-        const messageResponse = await axios.get(`${BASE_URL}/messages/count`, { withCredentials: true });
+        const messageResponse = await axios.get(`${BASE_URL}/messages/count`, {
+          withCredentials: true,
+        });
         setMessageCount(messageResponse.data.unreadMessages || 0);
       } catch (error) {
         console.error("Error fetching counts:", error);
@@ -84,7 +91,9 @@ function Navbar() {
   // Function to fetch the latest request for popup
   const fetchLatestRequest = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/user/requests/recieved`, { withCredentials: true });
+      const res = await axios.get(`${BASE_URL}/user/requests/recieved`, {
+        withCredentials: true,
+      });
 
       if (res.data.data && res.data.data.length > 0) {
         const newestRequest = res.data.data[0];
@@ -93,9 +102,12 @@ function Navbar() {
           showRequestPopup(newestRequest.fromUser);
         } else if (newestRequest.fromUserId) {
           try {
-            const userRes = await axios.get(`${BASE_URL}/user/${newestRequest.fromUserId}`, {
-              withCredentials: true,
-            });
+            const userRes = await axios.get(
+              `${BASE_URL}/user/${newestRequest.fromUserId}`,
+              {
+                withCredentials: true,
+              }
+            );
 
             if (userRes.data) {
               showRequestPopup(userRes.data);
@@ -220,7 +232,9 @@ function Navbar() {
               </h3>
             </div>
             <div className="p-3">
-              <p className="text-gray-700 text-xs">Messaging is a premium feature.</p>
+              <p className="text-gray-700 text-xs">
+                Messaging is a premium feature.
+              </p>
             </div>
             <div className="flex border-t border-gray-100">
               <button
@@ -250,8 +264,11 @@ function Navbar() {
         </Link>
 
         {user && (
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/premium" className="hover:text-pink-200 transition duration-300">
+          <div className="flex items-center space-x-6">
+            <Link
+              to="/premium"
+              className="hover:text-pink-200 transition duration-300"
+            >
               Premium
             </Link>
             <button
@@ -298,7 +315,9 @@ function Navbar() {
                 <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-xl py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="text-sm text-gray-500">Signed in as</p>
-                    <p className="text-sm font-medium text-gray-800">{user.email}</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      {user.email}
+                    </p>
                   </div>
 
                   <Link
@@ -308,13 +327,15 @@ function Navbar() {
                   >
                     Your Profile
                   </Link>
- 
+
                   <Link
                     to="/requests"
                     className="relative block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition duration-150"
                     onClick={() => {
                       closeDropdown();
-                      window.dispatchEvent(new CustomEvent("refreshRequests"));
+                      window.dispatchEvent(
+                        new CustomEvent("refreshRequests")
+                      );
                     }}
                   >
                     <div className="flex justify-between items-center">
