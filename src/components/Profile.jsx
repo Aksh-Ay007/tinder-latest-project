@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import EditProfile from "./EditProfile";
-
+import PhotoGallery from "./PhotoGallery"; // Import the new component
 
 function Profile() {
   const user = useSelector((store) => store.user);
@@ -153,25 +153,16 @@ function Profile() {
             </div>
           </div>
 
-          {/* Right Column - Connections */}
-          <div className="w-full md:w-1/3 bg-white rounded-xl shadow-sm p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-700">Connections</h2>
-              <Link 
-                to="/connections" 
-                className="text-purple-600 hover:text-pink-600 transition duration-300 text-sm"
-              >
-                View All
-              </Link>
+          {/* Right Column - Photo Gallery */}
+          <div className="w-full md:w-1/2">
+            {/* Photo Gallery section */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+              <PhotoGallery user={user} />
             </div>
-            <div className="space-y-3">
-              <p className="text-gray-500 text-center py-6">Connection preview will go here</p>
-            </div>
+          
           </div>
         </div>
       </div>
-
-      
 
       {/* Edit Profile Modal */}
       {isModalOpen && (

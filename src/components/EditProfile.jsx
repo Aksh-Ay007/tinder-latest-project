@@ -23,6 +23,7 @@ function EditProfile({ user, onClose }) {
   const navigate = useNavigate();
 
   // For handling hobby and skills as arrays
+  
   const [hobbyInput, setHobbyInput] = useState('');
   const [skillInput, setSkillInput] = useState('');
 
