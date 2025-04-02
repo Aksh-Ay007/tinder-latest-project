@@ -15,6 +15,7 @@ function Navbar() {
   const [requestCount, setRequestCount] = useState(0);
   const [connectionCount, setConnectionCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0); // State for unread message count
+  const [showPremiumModal, setShowPremiumModal] = useState(false); // State for premium modal
   const notificationAudioRef = useRef(null);
 
   // Fetch pending request count, connection count, and unread message count
@@ -61,12 +62,51 @@ function Navbar() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleMessagesClick = () => {
+    if (premium.isPremium) {
+      navigate("/messages");
+    } else {
+      setShowPremiumModal(true);
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg">
       <audio ref={notificationAudioRef} preload="auto">
         <source src="/sounds/notification.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
+
+      {/* Premium Modal */}
+      {showPremiumModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-lg shadow-lg w-72 overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-2">
+              <h3 className="text-base font-bold text-white flex items-center">
+                Premium Feature
+              </h3>
+            </div>
+            <div className="p-3">
+              <p className="text-gray-700 text-xs">Messaging is a premium feature.</p>
+            </div>
+            <div className="flex border-t border-gray-100">
+              <button
+                onClick={() => setShowPremiumModal(false)}
+                className="flex-1 px-3 py-2 text-gray-600 text-xs font-medium"
+              >
+                Close
+              </button>
+              <Link
+                to="/premium"
+                className="flex-1 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium text-center"
+                onClick={() => setShowPremiumModal(false)}
+              >
+                Upgrade Now
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
@@ -87,7 +127,7 @@ function Navbar() {
               Premium
             </Link>
             <button
-              onClick={() => navigate("/messages")}
+              onClick={handleMessagesClick}
               className="relative hover:text-pink-200 transition duration-300"
             >
               Messages
@@ -203,10 +243,7 @@ function Navbar() {
             Premium
           </Link>
           <button
-            onClick={() => {
-              navigate("/messages");
-              toggleMobileMenu();
-            }}
+            onClick={handleMessagesClick}
             className="block w-full text-left px-4 py-2 hover:bg-purple-50 transition duration-150"
           >
             Messages
