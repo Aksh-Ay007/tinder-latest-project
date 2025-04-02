@@ -141,6 +141,7 @@ function Navbar() {
         )}
 
         {/* Mobile Menu Toggle */}
+        {/*premium feature*/}
         <button
           className="md:hidden text-white focus:outline-none"
           onClick={toggleMobileMenu}
