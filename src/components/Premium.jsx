@@ -92,36 +92,34 @@ const Premium = () => {
     }
   };
 
-  // Membership Plans Component
   const MembershipPlans = () => {
     return (
-      <div className="container mx-auto px-4 py-8 mt-6"> {/* Reduced py and mt */}
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800"> {/* Reduced mb */}
+      <div className="container mx-auto px-2 sm:px-4 py-12 mt-12">
+        <h1 className="text-4xl font-bold text-center mb-10 text-gray-800">
           Upgrade Your Experience
         </h1>
-        <div className="flex flex-col md:flex-row justify-center md:space-x-8 space-y-8 md:space-y-0">
+        
+        {/* Responsive container with improved centering */}
+        <div className="flex justify-center flex-wrap gap-6 max-w-[1200px] mx-auto">
           {/* Silver Membership Plan */}
-          <div className="card bg-white shadow-xl rounded-xl p-6 w-full max-w-sm flex flex-col">
-            <h2 className="text-xl font-bold text-center mb-3 text-gray-800 uppercase">
+          <div className="card bg-white shadow-xl rounded-xl p-6 w-full max-w-[500px] flex flex-col">
+            <h2 className="text-2xl font-bold text-center mb-4 text-gray-800 uppercase">
               Silver Membership
             </h2>
-            <div className="text-center mb-3">
-              <span className="text-2xl font-extrabold text-secondary">₹999</span>
-              <span className="text-gray-500 ml-1">/ 3 months</span>
+            <div className="text-center mb-4">
+              <span className="text-3xl font-extrabold text-secondary">₹999</span>
+              <span className="text-gray-500 ml-2">/ 3 months</span>
             </div>
-            <ul className="space-y-2 mb-3 flex-grow overflow-y-auto max-h-48">
+            <ul className="space-y-3 mb-6">
               {[
                 "Chat with other people",
                 "100 Connection Requests per day",
                 "Blue Tick Verified",
                 "3 Months Membership",
-                "Access to exclusive groups",
-                "Priority support",
-                "Early access to new features",
               ].map((feature, index) => (
-                <li key={index} className="flex items-center text-sm text-gray-700">
+                <li key={index} className="flex items-center text-gray-700">
                   <svg
-                    className="w-4 h-4 text-green-500 mr-2"
+                    className="w-5 h-5 text-green-500 mr-2"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -137,36 +135,31 @@ const Premium = () => {
             </ul>
             <button
               onClick={() => handleBuyClick("silver")}
-              className="btn btn-secondary w-full text-sm py-2"
+              className="btn btn-secondary w-full mt-4"
             >
               Choose Silver Plan
             </button>
           </div>
-
+  
           {/* Gold Membership Plan */}
-          <div className="card bg-white shadow-xl rounded-xl p-6 w-full max-w-sm flex flex-col">
-            <h2 className="text-xl font-bold text-center mb-3 text-gray-800 uppercase">
+          <div className="card bg-white shadow-xl rounded-xl p-6 w-full max-w-[500px] flex flex-col">
+            <h2 className="text-2xl font-bold text-center mb-4 text-gray-800 uppercase">
               Gold Membership
             </h2>
-            <div className="text-center mb-3">
-              <span className="text-2xl font-extrabold text-primary">₹1999</span>
-              <span className="text-gray-500 ml-1">/ 6 months</span>
+            <div className="text-center mb-4">
+              <span className="text-3xl font-extrabold text-primary">₹1999</span>
+              <span className="text-gray-500 ml-2">/ 6 months</span>
             </div>
-            <ul className="space-y-2 mb-3 flex-grow overflow-y-auto max-h-48">
+            <ul className="space-y-3 mb-6">
               {[
                 "Chat with other people",
                 "Infinite Connection Requests",
                 "Blue Tick Verified",
                 "6 Months Membership",
-                "Unlimited access to all features",
-                "Personalized recommendations",
-                "Featured profile badge",
-                "Exclusive events and webinars",
-                "Dedicated account manager",
               ].map((feature, index) => (
-                <li key={index} className="flex items-center text-sm text-gray-700">
+                <li key={index} className="flex items-center text-gray-700">
                   <svg
-                    className="w-4 h-4 text-green-500 mr-2"
+                    className="w-5 h-5 text-green-500 mr-2"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -182,16 +175,18 @@ const Premium = () => {
             </ul>
             <button
               onClick={() => handleBuyClick("gold")}
-              className="btn btn-primary w-full text-sm py-2"
+              className="btn btn-primary w-full mt-4"
             >
               Choose Gold Plan
             </button>
           </div>
         </div>
+  
+        {/* Additional padding for mobile scrolling */}
+        <div className="h-[100px]"></div>
       </div>
     );
   };
-
   // Premium User View Component
   const PremiumUserView = () => {
     return (
