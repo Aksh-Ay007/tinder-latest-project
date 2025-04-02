@@ -260,7 +260,7 @@ function Navbar() {
           to={"/"}
           className="text-xl sm:text-2xl font-bold flex items-center gap-2 bg-white text-purple-600 px-4 py-1 rounded-full shadow-md hover:bg-purple-50 transition duration-300"
         >
-          Bondify
+         Connectia
         </Link>
 
         {user && (
