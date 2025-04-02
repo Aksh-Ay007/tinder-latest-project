@@ -5,7 +5,7 @@ import { addUser } from "../utils/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../utils/constants";
-// import { GoogleLogin } from './OAuth'; // Commented out to disable Google authentication
+import { GoogleLogin } from './OAuth'; // Commented out to disable Google authentication
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
@@ -163,7 +163,7 @@ const Login = () => {
             </div>
 
             {/* GoogleLogin component is disabled */}
-            {/* <GoogleLogin /> */}
+            <GoogleLogin /> 
 
             <div className="mt-4 text-center">
               <p className="text-xs text-gray-600">

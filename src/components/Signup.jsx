@@ -6,7 +6,7 @@ import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
 import { toast } from "react-toastify";
 import Guide from "./Guide";
-// import { GoogleSignup } from './OAuth'; // Google signup is disabled
+import { GoogleSignup } from './OAuth'; 
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -288,7 +288,7 @@ const Signup = () => {
               </span>
             </div>
 
-            {/* <GoogleSignup /> */}
+             <GoogleSignup /> 
 
             <div className="text-center">
               <p className="text-gray-600 text-sm">
