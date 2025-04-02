@@ -23,7 +23,6 @@ function EditProfile({ user, onClose }) {
   const navigate = useNavigate();
 
   // For handling hobby and skills as arrays
-  
   const [hobbyInput, setHobbyInput] = useState('');
   const [skillInput, setSkillInput] = useState('');
 
@@ -174,8 +173,8 @@ function EditProfile({ user, onClose }) {
   }, [success]);
 
   return (
-    <div className="relative">
-      <form onSubmit={saveProfile} className="space-y-4">
+    <div className="relative w-full max-w-full px-4 sm:px-6 mx-auto">
+      <form onSubmit={saveProfile} className="space-y-4 w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="form-control w-full col-span-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
@@ -236,10 +235,12 @@ function EditProfile({ user, onClose }) {
             />
           </div>
           
+          {/* Photo Upload - Mobile Optimized */}
           <div className="form-control w-full md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-3">Profile Photo</label>
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="w-40 h-40 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+            <div className="flex flex-col items-center gap-4">
+              {/* Photo Preview - Centered on mobile */}
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden mx-auto">
                 {(preview || photoUrl) ? (
                   <img 
                     src={preview || photoUrl} 
@@ -248,15 +249,16 @@ function EditProfile({ user, onClose }) {
                   />
                 ) : (
                   <div className="text-center text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <p className="text-xs">No photo uploaded</p>
+                    <p className="text-xs">No photo</p>
                   </div>
                 )}
               </div>
               
-              <div className="flex-1 w-full">
+              {/* Upload Button - Full width on mobile */}
+              <div className="w-full sm:max-w-xs mx-auto">
                 <input 
                   type="file" 
                   id="profile-photo-upload"
@@ -266,7 +268,7 @@ function EditProfile({ user, onClose }) {
                 />
                 <label 
                   htmlFor="profile-photo-upload" 
-                  className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition duration-200 ease-in-out"
+                  className="block w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-sm text-gray-600 hover:bg-gray-50 cursor-pointer transition duration-200 ease-in-out"
                 >
                   Choose Photo
                 </label>
@@ -280,9 +282,10 @@ function EditProfile({ user, onClose }) {
             </div>
           </div>
           
+          {/* Hobbies - Mobile Optimized */}
           <div className="form-control w-full md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Hobbies</label>
-            <div className="flex gap-2 mb-2">
+            <div className="flex flex-col sm:flex-row gap-2 mb-2">
               <input 
                 type="text" 
                 value={hobbyInput} 
@@ -294,7 +297,7 @@ function EditProfile({ user, onClose }) {
               <button 
                 type="button" 
                 onClick={addHobby}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200"
+                className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200"
               >
                 Add
               </button>
@@ -312,12 +315,16 @@ function EditProfile({ user, onClose }) {
                   </button>
                 </div>
               ))}
+              {hobby.length === 0 && (
+                <p className="text-xs text-gray-500">No hobbies added yet</p>
+              )}
             </div>
           </div>
           
+          {/* Skills - Mobile Optimized */}
           <div className="form-control w-full md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
-            <div className="flex gap-2 mb-2">
+            <div className="flex flex-col sm:flex-row gap-2 mb-2">
               <input 
                 type="text" 
                 value={skillInput} 
@@ -329,7 +336,7 @@ function EditProfile({ user, onClose }) {
               <button 
                 type="button" 
                 onClick={addSkill}
-                className="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition duration-200"
+                className="w-full sm:w-auto px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition duration-200"
               >
                 Add
               </button>
@@ -347,12 +354,15 @@ function EditProfile({ user, onClose }) {
                   </button>
                 </div>
               ))}
+              {skills.length === 0 && (
+                <p className="text-xs text-gray-500">No skills added yet</p>
+              )}
             </div>
           </div>
         </div>
         
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 mt-4">
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mt-4 rounded-md">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -366,17 +376,18 @@ function EditProfile({ user, onClose }) {
           </div>
         )}
         
-        <div className="flex justify-end gap-3 mt-6">
+        {/* Buttons - Full width on mobile */}
+        <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-6">
           <button 
             type="button" 
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition duration-200"
+            className="w-full sm:w-auto px-4 py-3 sm:py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition duration-200 mb-2 sm:mb-0"
           >
             Cancel
           </button>
           <button 
             type="submit" 
-            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition duration-200 flex items-center gap-2"
+            className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition duration-200 flex items-center justify-center gap-2"
             disabled={loading}
           >
             {loading ? (
@@ -392,9 +403,9 @@ function EditProfile({ user, onClose }) {
         </div>
       </form>
       
-      {/* Toast Message */}
+      {/* Toast Message - Mobile friendly */}
       {success && (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50">
           <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-md flex items-center">
             <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
