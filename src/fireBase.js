@@ -6,7 +6,8 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "dating-app-8b47a.firebaseapp.com",
+  // authDomain: "dating-app-8b47a.firebaseapp.com",
+  authDomain: "connectia.live",
   projectId: "dating-app-8b47a",
   storageBucket: "dating-app-8b47a.firebasestorage.app",
   messagingSenderId: "406894078804",
