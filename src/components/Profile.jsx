@@ -171,21 +171,7 @@ function Profile() {
         </div>
       </div>
 
-      {/* Footer (optional) */}
-      <div className="mt-10 py-4 border-t border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center text-sm text-gray-500">
-            <div className="flex items-center">
-              <span className="text-purple-600 mr-2">❤</span> LoveMatch © 2025 All rights reserved
-            </div>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-500 hover:text-gray-700">Privacy Policy</a>
-              <a href="#" className="text-gray-500 hover:text-gray-700">Terms of Service</a>
-              <a href="#" className="text-gray-500 hover:text-gray-700">Contact Us</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
       {/* Edit Profile Modal */}
       {isModalOpen && (

@@ -8,7 +8,7 @@ const initialState = JSON.parse(localStorage.getItem("premium")) || {
 
 const premiumSlice = createSlice({
   name: "premium",
-  initialState,
+  initialState:{  isPremium: false, },
   reducers: {
     setPremium: (state, action) => {
       state.isPremium = action.payload.isPremium;
