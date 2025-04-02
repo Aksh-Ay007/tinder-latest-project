@@ -213,17 +213,19 @@ function Requests() {
           <p className="text-gray-500 mb-4">Wants to connect with you</p>
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3">
-            {/* View Profile Button */}
-            <Link 
-              to={'/userProfile'} 
-              className="flex items-center text-gray-700 hover:text-purple-700 font-medium bg-gray-100 hover:bg-gray-200 py-2 px-4 rounded-lg transition duration-200"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              View Profile
-            </Link>
+            
+      {/* View Profile Button */}
+<Link
+  to="/userProfile"
+  state={{ userId: request.fromUserId._id, requestStatus: "pending", requestId: request._id }}
+  className="flex items-center text-gray-700 hover:text-purple-700 font-medium bg-gray-100 hover:bg-gray-200 py-2 px-4 rounded-lg transition duration-200"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  </svg>
+  View Profile
+</Link>
             {/* Accept Button */}
             <button 
               className="flex items-center text-white font-medium bg-green-500 hover:bg-green-600 py-2 px-4 rounded-lg transition duration-200 shadow-md"

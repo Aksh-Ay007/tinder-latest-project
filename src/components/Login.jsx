@@ -10,6 +10,7 @@ import { GoogleLogin } from './OAuth'; // Commented out to disable Google authen
 const Login = () => {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -122,13 +123,50 @@ const Login = () => {
                   </svg>
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"} // Toggle between text and password
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full pl-9 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-transparent"
                   placeholder="Enter your password"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477 0 12 0c1.02 0 2.007.15 2.925.425M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3.98 8.223A10.05 10.05 0 0112 4c5.523 0 10 4.477 10 10s-4.477 10-10 10a10.05 10.05 0 01-8.02-3.777M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  )}
+                </button>
               </div>
             </div>
 
@@ -163,7 +201,7 @@ const Login = () => {
             </div>
 
             {/* GoogleLogin component is disabled */}
-            <GoogleLogin /> 
+            <GoogleLogin />
 
             <div className="mt-4 text-center">
               <p className="text-xs text-gray-600">
