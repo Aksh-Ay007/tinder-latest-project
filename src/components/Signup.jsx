@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BASE_URL } from "../utils/constants";
 import { toast } from "react-toastify";
-import Guide from './Guide'
-//import { GoogleSignup } from './OAuth';
+import Guide from "./Guide";
+// import { GoogleSignup } from './OAuth'; // Google signup is disabled
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -15,21 +15,20 @@ const Signup = () => {
     confirmPassword: "",
     firstName: "",
     lastName: "",
-    gender: ""
+    gender: "",
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [userData, setUserData] = useState(null);
-  const [showOptions, setShowOptions] = useState(false); // New state for showing options
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
+
     // Clear error when field is edited
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
@@ -38,69 +37,70 @@ const Signup = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     // First name validation
     if (!formData.firstName) {
       newErrors.firstName = "First name is required";
     } else if (formData.firstName.length < 3) {
       newErrors.firstName = "Name must be at least 3 characters";
     }
-    
+
     // Last name validation
     if (!formData.lastName) {
       newErrors.lastName = "Last name is required";
     }
-    
+
     // Email validation
     if (!formData.emailId) {
       newErrors.emailId = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.emailId)) {
       newErrors.emailId = "Email is not valid";
     }
-    
+
     // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(formData.password)) {
-      newErrors.password = "Password must include uppercase, lowercase, number and special character";
+      newErrors.password =
+        "Password must include uppercase, lowercase, number and special character";
     }
-    
+
     // Confirm password
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-    
+
     // Gender validation
     if (!formData.gender) {
       newErrors.gender = "Please select a gender";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-  
+
     try {
       const res = await axios.post(
         `${BASE_URL}/signup`,
-        { 
-          firstName: formData.firstName, 
-          lastName: formData.lastName, 
-          emailId: formData.emailId, 
-          password: formData.password, 
-          gender: formData.gender 
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          emailId: formData.emailId,
+          password: formData.password,
+          gender: formData.gender,
         },
         { withCredentials: true }
       );
-      
+
       // Check if we have the expected response structure
       if (res.data && res.data.success && res.data.data) {
         const user = res.data.data;
@@ -116,12 +116,12 @@ const Signup = () => {
     } catch (error) {
       const errorMsg = error.response?.data?.message || "Something went wrong";
       toast.error(errorMsg);
-      
+
       // Check for specific error types
       if (errorMsg.includes("email")) {
-        setErrors({...errors, emailId: errorMsg});
+        setErrors({ ...errors, emailId: errorMsg });
       } else if (errorMsg.includes("password")) {
-        setErrors({...errors, password: errorMsg});
+        setErrors({ ...errors, password: errorMsg });
       }
     } finally {
       setIsLoading(false);
@@ -131,29 +131,19 @@ const Signup = () => {
   // Handle onboarding completion
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
-    setShowOptions(true);
+    navigate("/profile"); // Redirect to the profile page after onboarding
+    toast.info("Complete your profile to get better matches!");
   };
 
   // Handle onboarding skip
   const handleOnboardingSkip = () => {
     setShowOnboarding(false);
-    setShowOptions(true);
-  };
-
-  // Navigate to profile
-  const goToProfile = () => {
-    navigate("/profile");
-    toast.info("Complete your profile to get better matches!");
-  };
-
-  // Navigate to home
-  const goToHome = () => {
-    navigate("/");
+    navigate("/"); // Redirect to the home page if onboarding is skipped
     toast.info("You can complete your profile later from your account settings.");
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] bg-gradient-to-b from-gray-50 to-gray-100 p-4  mt-10">
+    <div className="flex items-center justify-center min-h-[80vh] bg-gradient-to-b from-gray-50 to-gray-100 p-4 mt-10">
       <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 w-full max-w-md">
         <div className="bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-5 text-center">
           <h2 className="text-lg font-bold text-white">Create Account</h2>
@@ -175,7 +165,9 @@ const Signup = () => {
                   placeholder="First Name"
                   required
                 />
-                {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
+                {errors.firstName && (
+                  <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
+                )}
               </div>
 
               <div>
@@ -190,7 +182,9 @@ const Signup = () => {
                   placeholder="Last Name"
                   required
                 />
-                {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
+                {errors.lastName && (
+                  <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+                )}
               </div>
             </div>
 
@@ -206,7 +200,9 @@ const Signup = () => {
                 placeholder="Email Address"
                 required
               />
-              {errors.emailId && <p className="text-red-500 text-xs mt-1">{errors.emailId}</p>}
+              {errors.emailId && (
+                <p className="text-red-500 text-xs mt-1">{errors.emailId}</p>
+              )}
             </div>
 
             <div>
@@ -219,12 +215,16 @@ const Signup = () => {
                 }`}
                 required
               >
-                <option value="" disabled>Select Gender</option>
+                <option value="" disabled>
+                  Select Gender
+                </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="others">Other</option>
               </select>
-              {errors.gender && <p className="text-red-500 text-xs mt-1">{errors.gender}</p>}
+              {errors.gender && (
+                <p className="text-red-500 text-xs mt-1">{errors.gender}</p>
+              )}
             </div>
 
             <div>
@@ -242,7 +242,9 @@ const Signup = () => {
               {errors.password ? (
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               ) : (
-                <p className="text-xs text-gray-500 mt-1">8+ chars with upper, lower, number</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  8+ chars with upper, lower, number
+                </p>
               )}
             </div>
 
@@ -258,7 +260,11 @@ const Signup = () => {
                 placeholder="Confirm Password"
                 required
               />
-              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
             <button
@@ -282,13 +288,15 @@ const Signup = () => {
               </span>
             </div>
 
-       { /*    <GoogleSignup /> */}
-
+            {/* <GoogleSignup /> */}
 
             <div className="text-center">
               <p className="text-gray-600 text-sm">
                 Already have an account?{" "}
-                <Link to="/login" className="text-pink-600 hover:text-pink-800 font-medium transition">
+                <Link
+                  to="/login"
+                  className="text-pink-600 hover:text-pink-800 font-medium transition"
+                >
                   Sign In
                 </Link>
               </p>
@@ -296,6 +304,15 @@ const Signup = () => {
           </form>
         </div>
       </div>
+
+      {/* Show onboarding guide */}
+      {showOnboarding && (
+        <Guide
+          user={userData}
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+      )}
     </div>
   );
 };
