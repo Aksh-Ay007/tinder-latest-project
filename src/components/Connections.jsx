@@ -33,7 +33,7 @@ function Connections() {
   }, []);
 
   const handleMessageClick = (connectionId) => {
-    if (premium.isPremium) {
+    if (user?.isPremium) {  // Use isPremium from user object instead of premium.isPremium
       navigate(`/chat/${connectionId}`); // Navigate to chat if the user is premium
     } else {
       setShowPremiumModal(true); // Show premium modal for non-premium users

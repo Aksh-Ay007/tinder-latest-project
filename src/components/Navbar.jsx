@@ -208,7 +208,7 @@ function Navbar() {
   };
 
   const handleMessagesClick = () => {
-    if (premium.isPremium) {
+    if (user?.isPremium) {  // Use the isPremium field from the user object
       navigate("/messages");
     } else {
       setShowPremiumModal(true);

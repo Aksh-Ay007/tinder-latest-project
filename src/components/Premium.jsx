@@ -1,14 +1,20 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Trophy, Star, Shield, Sparkles } from "lucide-react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
 import { setPremium } from "../utils/premiumSlice";
+import { updateUser } from "../utils/userSlice";
 
 const Premium = () => {
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
+  const premiumState = useSelector(state => state.premium);
+  
+  // Initialize state from Redux store - more careful check for premium status
   const [isUserPremium, setIsUserPremium] = useState(false);
   const [premiumDetails, setPremiumDetails] = useState(null);
-  const dispatch = useDispatch();
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   // Calculate expiration date using useMemo
   const expirationDate = useMemo(() => {
@@ -32,10 +38,103 @@ const Premium = () => {
     });
   }, [premiumDetails]);
 
-  // Verify premium user on component mount
+  // Initial setup on component mount - check localStorage first, then redux states
   useEffect(() => {
-    verifyPremiumUser();
+    // Check localStorage first on initial load
+    const storedPremium = localStorage.getItem("premium");
+    if (storedPremium) {
+      try {
+        const parsedPremium = JSON.parse(storedPremium);
+        if (parsedPremium.isPremium === true) {
+          setIsUserPremium(true);
+          setPremiumDetails(parsedPremium.premiumDetails);
+          // Also update Redux if needed
+          dispatch(setPremium(parsedPremium));
+        }
+      } catch (e) {
+        console.error("Error parsing stored premium data", e);
+      }
+    }
+    
+    // Then check Redux state as a backup
+    const isPremiumFromUser = user && user.isPremium === true;
+    const isPremiumFromState = premiumState && premiumState.isPremium === true;
+    
+    console.log("Premium status check:", { 
+      userIsPremium: isPremiumFromUser, 
+      premiumStateIsPremium: isPremiumFromState,
+      user,
+      premiumState
+    });
+    
+    if (isPremiumFromUser || isPremiumFromState) {
+      setIsUserPremium(true);
+      setPremiumDetails(premiumState?.premiumDetails || user);
+    }
+    
+    setInitialLoadComplete(true);
   }, []);
+
+  // Secondary effect to update state when user or premiumState changes
+  useEffect(() => {
+    const isPremiumFromUser = user && user.isPremium === true;
+    const isPremiumFromState = premiumState && premiumState.isPremium === true;
+    
+    if (isPremiumFromUser || isPremiumFromState) {
+      setIsUserPremium(true);
+      setPremiumDetails(premiumState?.premiumDetails || user);
+    } else if (initialLoadComplete) {
+      // Only reset if initial load is done to avoid flickering
+      setIsUserPremium(false);
+      setPremiumDetails(null);
+    }
+  }, [user, premiumState, initialLoadComplete]);
+
+  // Verify premium user on component mount, but only after initial load is complete
+  useEffect(() => {
+    if (initialLoadComplete) {
+      verifyPremiumUser();
+    }
+  }, [initialLoadComplete]);
+
+  // Fetch full user data and update Redux store
+  const fetchAndUpdateUserData = async () => {
+    try {
+      const res = await axios.get(BASE_URL + "/user/profile", {
+        withCredentials: true,
+      });
+      
+      if (res.data) {
+        // Update the user data in Redux
+        dispatch(updateUser(res.data));
+        
+        // Only set premium if explicitly true
+        if (res.data.isPremium === true) {
+          // Update localStorage first
+          const premiumData = { 
+            isPremium: true, 
+            premiumDetails: res.data 
+          };
+          localStorage.setItem("premium", JSON.stringify(premiumData));
+          
+          // Then update component state and Redux
+          setIsUserPremium(true);
+          setPremiumDetails(res.data);
+          dispatch(setPremium(premiumData));
+        } else {
+          localStorage.removeItem("premium");
+          setIsUserPremium(false);
+          setPremiumDetails(null);
+          dispatch(setPremium({ isPremium: false, premiumDetails: null }));
+        }
+      }
+      
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching user data", error);
+      return null;
+    }
+  };
 
   // Verify premium user status
   const verifyPremiumUser = async () => {
@@ -44,13 +143,41 @@ const Premium = () => {
         withCredentials: true,
       });
 
-      if (res.data.isPremium) {
+      if (res.data && res.data.isPremium === true) {
+        // Update localStorage first
+        const premiumData = { 
+          isPremium: true, 
+          premiumDetails: res.data 
+        };
+        localStorage.setItem("premium", JSON.stringify(premiumData));
+        
+        // Then update component state and Redux
         setIsUserPremium(true);
         setPremiumDetails(res.data);
-        dispatch(setPremium({ isPremium: true, premiumDetails: res.data })); // Update Redux store
+        
+        // Also update the user object in Redux to include premium status
+        dispatch(updateUser({
+          isPremium: true,
+          membershipType: res.data.membershipType
+        }));
+        
+        dispatch(setPremium(premiumData)); // Update Redux store
+      } else {
+        // Explicitly set as non-premium if the API returns false or no data
+        localStorage.removeItem("premium");
+        setIsUserPremium(false);
+        setPremiumDetails(null);
+        
+        // Update Redux state to reflect non-premium status
+        dispatch(updateUser({ isPremium: false }));
+        dispatch(setPremium({ isPremium: false, premiumDetails: null }));
       }
     } catch (error) {
       console.error("Error verifying premium status", error);
+      // On error, assume non-premium for safety
+      localStorage.removeItem("premium");
+      setIsUserPremium(false);
+      setPremiumDetails(null);
     }
   };
 
@@ -80,8 +207,33 @@ const Premium = () => {
         theme: {
           color: "#9C27B0",
         },
-        handler: async () => {
-          await verifyPremiumUser(); // Re-fetch premium status after payment
+        handler: async function() {
+          try {
+            // After successful payment, update localStorage and fetch latest data
+            const userData = await fetchAndUpdateUserData();
+            
+            if (userData && userData.isPremium) {
+              const premiumData = { 
+                isPremium: true, 
+                premiumDetails: userData 
+              };
+              
+              // Update localStorage first
+              localStorage.setItem("premium", JSON.stringify(premiumData));
+              
+              // Then update component state and Redux
+              setIsUserPremium(true);
+              setPremiumDetails(userData);
+              dispatch(setPremium(premiumData));
+            }
+            
+            // Force verification from server as a final check
+            setTimeout(() => {
+              verifyPremiumUser();
+            }, 1000);
+          } catch (error) {
+            console.error("Error updating user data after payment", error);
+          }
         },
       };
 
@@ -187,6 +339,7 @@ const Premium = () => {
       </div>
     );
   };
+
   // Premium User View Component
   const PremiumUserView = () => {
     return (
@@ -255,8 +408,11 @@ const Premium = () => {
     );
   };
 
-  // Conditional rendering based on premium status
-  return isUserPremium ? <PremiumUserView /> : <MembershipPlans />;
+  // Debug section to log the current state - useful during development
+  console.log("Current state:", { isUserPremium, premiumDetails, user, premiumState });
+
+  // Conditional rendering based on premium status - with strict boolean check
+  return isUserPremium === true ? <PremiumUserView /> : <MembershipPlans />;
 };
 
 export default Premium;
